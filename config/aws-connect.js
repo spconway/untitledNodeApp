@@ -16,10 +16,15 @@ var sns = new AWS.SNS({
 	DefaultSenderID: 'UntitledNodeApp'
 });
 
+var sqs = new AWS.SQS();
+
 console.log('Now connected to AWS SNS.');
 console.log('Endpoint: ', sns.config.endpoint);
 console.log('API: ', sns.config.apiVersion);
 console.log('Monthly Spending Limit: ', sns.config.MonthlySpendLimit);
 console.log('Default Sender Id: ', sns.config.DefaultSenderID);
 
-module.exports = sns;
+module.exports = {
+	sns: sns,
+	sqs: sqs
+};

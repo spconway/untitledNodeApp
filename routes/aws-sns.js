@@ -1,4 +1,4 @@
-var sns = require('../config/aws-connect');
+var sns = require('../config/aws-connect').sns;
 
 /*
 	Create topic
@@ -7,23 +7,7 @@ function createTopic(cb) {
 	sns.createTopic({ Name: 'Test'} , function(err, data) {
 	  if (err) console.error(err, err.stack); // an error occurred
 	  else     console.log('Successfully created topic ', data.TopicArn);           // successful response
-	  cb();
-	});
-}
-
-/*
-	Create subscription
- */
-function subscribe(phoneNumber, cb) {
-	var subscribeParams = {
-	  Protocol: 'sms', /* required */
-	  Endpoint: '+1' + phoneNumber
-	};
-
-	sns.subscribe(subscribeParams, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log('Successfully subscribed to ', data.SubscriptionArn);           // successful response
-	  cb();
+	  cb(err, data);
 	});
 }
 
@@ -40,21 +24,7 @@ function subscribe(phoneNumber, topic, cb) {
 	sns.subscribe(subscribeParams, function(err, data) {
 	  if (err) console.log(err, err.stack); // an error occurred
 	  else     console.log('Successfully subscribed to ', data.SubscriptionArn);           // successful response
-	  cb();
-	});
-}
-
-/*
-	Publish
- */
-function publish(phoneNumber, message, cb){
-	var publishParams = {
-	  Message: message, /* required */
-	  PhoneNumber: '+1' + phoneNumber
-	};
-	sns.publish(publishParams, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log('Successfully published message: ', data);           // successful response
+	  cb(err, data);
 	});
 }
 
@@ -70,8 +40,12 @@ function publish(phoneNumber, message, topic, cb){
 	sns.publish(publishParams, function(err, data) {
 	  if (err) console.log(err, err.stack); // an error occurred
 	  else     console.log('Successfully published message: ', data);           // successful response
+	  cb(err, data);
 	});
 }
 
-// execute the series of async calls
-// async.series([createTopic, subscribe, publish]);
+module.exports = {
+	createTopic: createTopic,
+	subscribe: subscribe,
+	publish: publish
+}
