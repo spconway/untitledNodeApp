@@ -38,9 +38,8 @@ function publish(phoneNumber, message, topic, cb){
 	  PhoneNumber: '+1' + phoneNumber
 	};
 	sns.publish(publishParams, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log('Successfully published message: ', data);           // successful response
-	  cb(err, data);
+	  if (err) cb(err, null);							// an error occurred
+	  else     cb(null, data);           // successful response
 	});
 }
 

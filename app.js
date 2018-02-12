@@ -8,6 +8,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var db = require('./config/mongoose-connect');
 var aws = require('./config/aws-connect');
+var batchJob = require('./schedular/snsQueueSchedular');
 
 /* path setup */
 var index = require('./routes/index');

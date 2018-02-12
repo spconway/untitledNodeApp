@@ -9,10 +9,7 @@ router.get('/', function(req, res, next) {
 
 /* POST new user */
 router.post('/', function(req, res, next) {
-	if (req.body.email &&
-  req.body.username &&
-  req.body.password &&
-  req.body.passwordConf) {
+	if (req.body.email && req.body.username && req.body.password && req.body.passwordConf) {
 	  var userData = {
 	    email: req.body.email,
 	    username: req.body.username,

@@ -21,7 +21,15 @@ var UserSchema = new mongoose.Schema({
 	passwordConf: {
 		type: String,
 		required: true
-	}
+	},
+  creationDate: {
+    type: Date,
+    default: Date.now
+  },
+  messages: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Message'
+  }]
 });
 
 //hashing a password before saving it to the database
