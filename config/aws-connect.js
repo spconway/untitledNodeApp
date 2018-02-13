@@ -1,5 +1,6 @@
 var AWS = require('aws-sdk');
 var async = require('async');
+var logger = require('./logger');
 var aws_key = 'AKIAIORSDPVVEBY6EGQQ';
 var aws_secret = '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';
 var region = 'us-east-1';
@@ -18,11 +19,11 @@ var sns = new AWS.SNS({
 
 var sqs = new AWS.SQS();
 
-console.log('Now connected to AWS SNS.');
-console.log('Endpoint: ', sns.config.endpoint);
-console.log('API: ', sns.config.apiVersion);
-console.log('Monthly Spending Limit: ', sns.config.MonthlySpendLimit);
-console.log('Default Sender Id: ', sns.config.DefaultSenderID);
+logger.info('Now connected to AWS SNS.');
+logger.info('Endpoint: ', sns.config.endpoint);
+logger.info('API: ', sns.config.apiVersion);
+logger.info('Monthly Spending Limit: ', sns.config.MonthlySpendLimit);
+logger.info('Default Sender Id: ', sns.config.DefaultSenderID);
 
 module.exports = {
 	sns: sns,

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var logger = require('../config/logger');
 
 var MessageSchema = new mongoose.Schema({
 	user: {
@@ -41,7 +42,7 @@ function findByExecutionDateLessThanNowAndSubmitted(cb){
   var now = date.toISOString();
   Message.find({ executionDate: { '$lte': now }, status: "SUBMITTED" }, function(err, data) {
     if(err){
-      console.error('Error finding messages: ', err.stack);
+      logger.error('Error finding messages: ', err.stack);
       cb(err, null);
     }else{
       cb(null, data);
@@ -52,7 +53,7 @@ function findByExecutionDateLessThanNowAndSubmitted(cb){
 function update(id, values, cb) {
   Message.findByIdAndUpdate(id, values, function(err, data) {
     if(err){
-      console.error('Error updating records: ', err);
+      logger.error('Error updating records: ', err);
       cb(err, null);
     }else {
       cb(null, data);

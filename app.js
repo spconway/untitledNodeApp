@@ -1,14 +1,15 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var db = require('./config/mongoose-connect');
 var aws = require('./config/aws-connect');
-var batchJob = require('./schedular/snsQueueSchedular');
+var batchJob = require('./scheduler/snsQueueSchedular');
+var logger = require('./config/logger');
 
 /* path setup */
 var index = require('./routes/index');
@@ -31,7 +32,7 @@ app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(morgan('combined', { 'stream': logger.stream }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -49,7 +50,7 @@ app.use(session({
 /* custom login middleware */
 function checkLogin(req, res, next) {
 	if ((req.session && req.session.userId) || req.path == '/' || req.path == '/login') {
-    return next();
+    next();
   } else {
   	res.redirect('/');
   }

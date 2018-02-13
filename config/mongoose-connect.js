@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var logger = require('./logger');
 
 var mongoDB = 'mongodb://stephen:Crossfit1987@ds229468.mlab.com:29468/untitlednodeapp';
 
@@ -10,13 +11,13 @@ mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'connection error:'));
+db.on('error', logger.error.bind(logger, 'connection error:'));
 db.once('open', function() {
-	console.log('established database connection.');
-  console.log('host: ', db.host);
-  console.log('name: ', db.name);
-  console.log('port: ', db.port);
-  console.log('pool size: ', db._connectionOptions.poolSize);
+	logger.info('established database connection.');
+  logger.info('host: ', db.host);
+  logger.info('name: ', db.name);
+  logger.info('port: ', db.port);
+  logger.info('pool size: ', db._connectionOptions.poolSize);
 })
 
 module.exports = db;

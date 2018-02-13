@@ -5,6 +5,7 @@ var User = require('../models/user-account');
 var sqs = require('../config/aws-connect').sqs;
 var sns = require('../routes/aws-sns');
 var uuidv1 = require('uuid/v1');
+var logger = require('../config/logger');
 
 /**
  * *    *    *    *    *    *
@@ -22,72 +23,49 @@ var snsRecurrenceRule = new schedule.RecurrenceRule();
 snsRecurrenceRule.minute = new schedule.Range(0, 59, 3);
 
 schedule.scheduleJob(snsRecurrenceRule, function(fireDate) {
-	console.log("Launching snsJob. Scheduled time is: ", fireDate);
-	console.log("Step 1: Poll database for message with executionDate <= Date.now: ");
+	logger.info("Launching snsJob. Scheduled time is: ", fireDate);
+	logger.info("Step 1: Poll database for message with executionDate <= Date.now: ");
 	Message.findByExecutionDateLessThanNowAndSubmitted(function(err, data) {
 		var messages = data;
 		if(err){
 			return;
 		}else{
-			console.log("Step 2: Publish messages");
-			for(message in messages) {
-				var m = messages[message];
-				console.log("Sending message: ", m);
-				sns.publish(m.phone, m.message, null, function(err, data) {
-					if(err){
-						console.log("Error publishing message: ", err);
-					}else{
-						var publishedMessage = data;
-						var date = new Date();
-  					var now = date.toISOString();
-						var values = {
-							status: "DELIVERED",
-							messageId: publishedMessage.MessageId,
-							modificationDate: now
-						}
-						console.log("Successfully published message: ", data.MessageId);
-						console.log("Step 3: Updating records to status DELIVERED");
-						Message.update(m._id, values, function(err, data) {
-							if(err){
-								return;
-							}else{
-								console.log("Successfully updated records");
+			logger.debug("Messages returned: ", messages);
+			logger.info("Step 2: Publish messages");
+			if(messages.length > 0){
+				for(message in messages) {
+					var m = messages[message];
+					logger.info("Sending message: ", m);
+					sns.publish(m.phone, m.message, null, function(err, data) {
+						if(err){
+							logger.error("Error publishing message: ", err);
+						}else{
+							var publishedMessage = data;
+							var date = new Date();
+	  					var now = date.toISOString();
+							var values = {
+								status: "DELIVERED",
+								messageId: publishedMessage.MessageId,
+								modificationDate: now
 							}
-						});
-					}
-				});
+							logger.info("Successfully published message: ", data.MessageId);
+							logger.info("Step 3: Updating records to status DELIVERED");
+							Message.update(m._id, values, function(err, data) {
+								if(err){
+									return;
+								}else{
+									logger.info("Successfully updated records");
+								}
+							});
+						}
+					});
+				}
+			}else{
+				logger.info("No messages found. Job complete.");
 			}
 		}
 	});
 });
-
-/*
-var snsRecurrenceRuleWithQueue = new schedule.RecurrenceRule();
-snsRecurrenceRuleWithQueue.minute = new schedule.Range(0, 59, 1);
-
-schedule.scheduleJob(snsRecurrenceRule, function(fireDate) {
-	console.log("Launching snsJob. Scheduled time is: ", fireDate);
-	console.log("Step 1: Poll database for message with executionDate <= Date.now: ", now);
-	Message.findByExecutionDateLessThanNowAndSubmitted(function(err, data) {
-		if(err){
-			return;
-		}else{
-			console.log("Step 2: Create queue");
-			createQueue(function(err, data) {
-				if(err){
-					return;
-				}else{
-					var queueUrl = data.QueueUrl;
-					console.log("Step 3: Send messages to queue");
-					createQueue(function(err, data) {
-						if(err)
-					});
-				}
-			});
-		}
-	});
-});
-*/
 
 function createQueue(cb) {
 	var uuid_value = uuidv1();
@@ -101,8 +79,8 @@ function createQueue(cb) {
 	};
 
 	sqs.createQueue(params, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log(data);           // successful response
+	  if (err) logger.error(err, err.stack); // an error occurred
+	  else     logger.info(data);           // successful response
 	  cb(err, data);												// data.QueueUrl
 	});
 }
@@ -119,8 +97,8 @@ function sendMessageBatch(messages, queueUrl, cb) {
 	  QueueUrl: queueUrl /* required */
 	};
 	sqs.sendMessageBatch(params, function(err, data) {
-	  if (err) console.log(err, err.stack); // an error occurred
-	  else     console.log(data);           // successful response
+	  if (err) logger.error(err, err.stack); // an error occurred
+	  else     logger.info(data);           // successful response
 	});
 }
 
