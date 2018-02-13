@@ -1,8 +1,9 @@
 var AWS = require('aws-sdk');
 var async = require('async');
 var logger = require('./logger');
-var aws_key = 'AKIAIORSDPVVEBY6EGQQ';
-var aws_secret = '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';
+var credentials = require('./credentials/credentials');
+var aws_key = credentials.aws_key;
+var aws_secret = credentials.aws_secret;
 var region = 'us-east-1';
 
 AWS.config.update({
