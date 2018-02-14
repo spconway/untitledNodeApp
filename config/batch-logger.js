@@ -1,7 +1,7 @@
 var winston = require('winston');
 const env = process.env.NODE_ENV;
-const logDir = (env === 'production' ? '/var/log/' : './logs/');
-const fileName = 'untitledNodeApp.log';
+const logDir = (env === 'production' ? '/var/log/' : './logs/batch/');
+const fileName = 'untitledNodeApp-batch.log';
 const fs = require('fs');
 
 if (!fs.existsSync(logDir) && env !== 'production') {
@@ -10,13 +10,6 @@ if (!fs.existsSync(logDir) && env !== 'production') {
 
 var logger = new winston.Logger({
   transports: [
-    new winston.transports.Console({
-      level: 'debug',
-      timestamp: date,
-      colorize: true,
-      handleExceptions: true,
-      json: false
-    }),
     new winston.transports.File({
       filename: (logDir + fileName),
       level: env === 'production' ? 'error' : 'debug',

@@ -31,3 +31,6 @@ npm-debug.log
 
 # Credentials
 config/credentials/
+
+# Logs
+logs

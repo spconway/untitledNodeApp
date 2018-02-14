@@ -5,7 +5,7 @@ var User = require('../models/user-account');
 var sqs = require('../config/aws-connect').sqs;
 var sns = require('../routes/aws-sns');
 var uuidv1 = require('uuid/v1');
-var logger = require('../config/logger');
+var logger = require('../config/batch-logger');
 
 /**
  * *    *    *    *    *    *

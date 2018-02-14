@@ -4,7 +4,6 @@ function submitForm() {
   	message: document.getElementById('message').value,
   	date: document.getElementById('date').value
   }
-  console.log('params: ', params);
 
   var http = new XMLHttpRequest();
   if(params.date == "0000-00-00T00:00" || params.date == "" || params.date == null) {
@@ -16,7 +15,7 @@ function submitForm() {
 
   http.onreadystatechange = function() {
     if (http.readyState === 4) {
-      console.log(http.response); //Outputs a DOMString by default
+      //Outputs a DOMString by default
       updateStatus(JSON.parse(http.response));
     }
   }
@@ -40,8 +39,4 @@ function updateStatus(data) {
 	message.innerHTML = data["message"];
 	messageId.innerHTML = "Message id: " + data["messageId"];
 	error.innerHTML = data["error"];
-
-	console.log('message: ', message);
-	console.log('messageId: ', messageId);
-	console.log('error: ', error);
 }
