@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 var logger = require('./logger');
-
-var mongoDB = 'mongodb://stephen:Crossfit1987@ds229468.mlab.com:29468/untitlednodeapp';
+var userName = process.env.DB_USERNAME;
+var passWord = process.env.DB_PASSWORD;
+var mongoDB = formatConnection(userName, passWord);
 
 mongoose.connect(mongoDB, {
 	poolSize: 10
@@ -19,5 +20,9 @@ db.once('open', function() {
   logger.info('port: ', db.port);
   logger.info('pool size: ', db._connectionOptions.poolSize);
 })
+
+function formatConnection(u, p) {
+	return 'mongodb://' + u + ':' + p + '@ds229468.mlab.com:29468/untitlednodeapp';
+}
 
 module.exports = db;

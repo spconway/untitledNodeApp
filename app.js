@@ -6,6 +6,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+
+if(process.env.NODE_ENV !== 'production') {
+  require('dotenv').load();
+}
+
 var db = require('./config/mongoose-connect');
 var aws = require('./config/aws-connect');
 var batchJob = require('./scheduler/snsQueueSchedular');

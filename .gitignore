@@ -37,3 +37,6 @@ logs
 
 # AWS config
 .ebextensions
+
+# .env files
+.env
