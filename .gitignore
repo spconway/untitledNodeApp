@@ -35,7 +35,7 @@ config/credentials/
 # Logs
 logs
 
-# AWS config
+# AWS configuration files
 .ebextensions/
 
 # .env files
